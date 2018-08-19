@@ -14,4 +14,5 @@
   <p>As it deviates from regular Gomoku, I decided not to use hardcoded strategies. especially considering the fact the number of players, pieces needed and size can change. Instead I used searchAgents, while despite the multiple possible states each turn resulting in it being quite computationally demanding, with some optimizations, I believe it is better. </p>
   <p>However, I am still thinking of how some strategies can be hardcoded to reduce the time required, with the searchAgents being a fallback system instead.</p>
   <p>For further information, see the plaintext changelog.md.</p>
+  <p>For older versions, I used version tagging so you will not find them as branches. Go to tags instead.</p>
 </div>
