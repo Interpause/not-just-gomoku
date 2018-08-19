@@ -1,4 +1,4 @@
-def playerAgent(state,piece):
+def playerAgent(state,piece,ordlist):
     print("Your piece is: %s" % piece)
     coord = getInput()
     return coord
