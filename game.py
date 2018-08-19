@@ -31,23 +31,16 @@ class Game():
 
     def takeTurn(self,agent):
         done = False
-        for other in self.agents:
-            start = time.time()
-            other.update(self.state,agent.piece)
-            end = time.time()
-            self.log("%s took %fs to update."%(self.getName(other),end-start))
         while(not done):
             try:
-                start = time.time()
-                coord = agent.getMove(self.state)
-                end = time.time()
-                self.log("%s took %fs to decide."%(self.getName(agent),end-start))
-                for heuristic in agent.heuristics: self.log("%s's score: %f" % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+                self.updateAgents(agent.piece)
+                coord = self.getMove(agent)
                 self.state.place(agent.piece,coord)
                 done = True
                 
                 self.log("%s placed %s at (%d,%d)."%(self.getName(agent),agent.piece,coord[0],coord[1]))
-
+                for heuristic in agent.heuristics: self.log("%s's score: %f" % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+                
             except OutOfBoundsException: self.log("Those coordinates are out of bounds!")
             except OutOfSpaceException: self.log("The board is full and the game hasnt ended?")
             except SpaceTakenException: self.log("Space is taken!")
@@ -56,6 +49,21 @@ class Game():
                     return
         return
 
+    def updateAgents(self,piece):
+        for other in self.agents:
+            start = time.time()
+            other.update(self.state,piece)
+            end = time.time()
+            self.log("%s took %fs to update."%(self.getName(other),end-start))
+        return
+
+    def getMove(self,agent):
+        start = time.time()
+        coord = agent.getMove(self.state)
+        end = time.time()
+        self.log("%s took %fs to decide."%(self.getName(agent),end-start))
+        return coord
+    
     def checkWin(self):
         winner = self.state.isWin()
         if winner != True and winner != False:
@@ -68,6 +76,8 @@ class Game():
         elif winner == True:
                 print("The board is full!!! ITS A DRAW")
                 self.win = None
+        self.updateAgents(self.win)
+        for agent in self.agents: agent.onWin(self.win)
         return
             
     #helper functions
@@ -97,22 +107,13 @@ class Game():
 if __name__ == "__main__":
     #Heuristics
         #Cluster Heuristic #Falls under foresight tho. maxAgent naturally spaces weirdly.
-            #Determines when piece is too surrounded
-            #Determines when good idea to move away from cluster
-            #Acts as start piece strategic randomnizer
+            #Determines how to strategically cluster pieces
             #Encourages directing the flow rather than following it
-        #Space Heuristic (may be unused)
-            #Broadly assumes which spaces arent worth trying out
         #Create a set of state heuristics
 
     #Agents
-        #Agent options
-            #default handtuned options
-            #user specified options
-                #e.g. maxAgent's dim, reflexAgent's heuristic settings...
         #markovAgent
             #only agent to not utilize default/handtuned options for heuristics
-            #inherits from maxAgent?
             #uses sigmoid network to adjust best weights, score formulae and special case scores
             #needs two set of special options, one for itself and one for its opponent if based on maxAgent
         #extendedMarkovAgent
@@ -121,24 +122,38 @@ if __name__ == "__main__":
             #maxAgent but non-prioritising
             #^figure out how to prevent expectiAgent from being ungodly slow
         #maxThreadedAgent
-            #accidentally coded similar to a expectiagent
-            #extremely ungodly incredibly slow
+            #fix one day
 
 
     from agents.guiPlayerAgent import guiPlayerAgent as player
-    from agents.simpleAgent import simpleAgent as simple
+    from agents.simpleAgent import simpleAgent as sim
+    from agents.markovSimpleAgent import markovSimpleAgent as simM
     from agents.maxThreadedAgent import maxThreadedAgent as maxy
     from agents.maxAgent import maxAgent as maxx
+    from agents.baseAgent import baseAgent as whywouldyou
     import time
+    from threading import Thread
     
     #AI2.maxAgent
     #AI.simpleAgent
     #player.playerAgent
+        
     while(True):
         start = time.time()
-        main = Game(8,8,5,[simple,maxx,simple],silent = False)
+        main = Game(10,10,5,[maxx,sim,player],silent = False)
+        done = False
+        def autorestart():
+            loops = 0
+            while not done:
+                time.sleep(5)
+                loops+=1
+                if loops==36000:
+                    main.win = None
+                    break
         while(main.win==False):
+            done = False
+            Thread(target=autorestart).start()
             main.update()
+            done = True
         end = time.time()
         print(end - start)
-        break

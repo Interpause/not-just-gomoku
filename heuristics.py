@@ -1,8 +1,8 @@
 #defaults
 multiplier = 10
 exponent = 4
-largenum = (10**4)*2 #twice max of actlen/state.winnum
-winbonus = 2*largenum
+largenum = 10**4
+winbonus = largenum*2 #twice max of actlen/state.winnum
 
 #helpers
 def isOut(state,x,y):
@@ -10,7 +10,7 @@ def isOut(state,x,y):
     return False
 
 #heuristics
-def lineHeuristic(state,piece,coord,weight=1,multiplier=multiplier,exponent=exponent,largenum=largenum,bonusratio=1,winbonus=None):
+def lineHeuristic(state,piece,coord,weight=1,multiplier=multiplier,exponent=exponent,winbonus=winbonus):
     def score(grid,xmul,ymul):
         def count(grid,xmul,ymul):
             maxlen = 1
@@ -44,9 +44,6 @@ def lineHeuristic(state,piece,coord,weight=1,multiplier=multiplier,exponent=expo
         
     tscore = 0
     grid = state.grid()
-
-    if winbonus == None:
-        winbonus = largenum*bonusratio
     
     tscore += score(grid,1,0)
     if tscore >= winbonus:

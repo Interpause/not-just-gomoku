@@ -8,7 +8,6 @@ class guiPlayerAgent(baseAgent):
         #Window initialization
         self.window = Tk()
         self.window.resizable(0,0)
-        self.window.geometry("600x600")
         self.window.title("5 Line Game V2.2 - guiPlayerAgent")
         self.frame=Frame(self.window)
         Grid.rowconfigure(self.window, 0, weight=1)
@@ -20,19 +19,29 @@ class guiPlayerAgent(baseAgent):
         #actual extensions
         self.input = None
         self.btns = []
-        return        
+
+        maxSize = 600
+        unit = maxSize/3
+        xSize = self.state.length()*unit
+        ySize = self.state.height()*unit
+        while(xSize > maxSize or ySize > maxSize):
+            unit -= 1
+            xSize = self.state.length()*unit
+            ySize = self.state.height()*unit
+        self.window.geometry("%dx%d"%(xSize,ySize))
+        return
 
     #helper functions
     #enables all buttons
     def enable(self):
-        for y in range(self.state.length()):
+        for y in range(self.state.height()):
             for x in range(self.state.length()):
                 self.btns[y][x].configure(state=NORMAL)
         return
 
     #disables all buttons
     def disable(self):
-        for y in range(self.state.length()):
+        for y in range(self.state.height()):
             for x in range(self.state.length()):
                 self.btns[y][x].configure(state=DISABLED)
         return
@@ -42,7 +51,7 @@ class guiPlayerAgent(baseAgent):
         if self.btns == []:
             self.btninit()
         grid = self.state.grid()
-        for y in range(self.state.length()):
+        for y in range(self.state.height()):
             for x in range(self.state.length()):
                 self.btns[y][x].configure(text=grid[y][x])
         return
@@ -54,7 +63,7 @@ class guiPlayerAgent(baseAgent):
 
     #setup buttons in grid and gives them above handler
     def btninit(self):
-        for y in range(self.state.length()):
+        for y in range(self.state.height()):
             row = []
             for x in range(self.state.length()):
                 btn = Button(self.frame,text=" ",height=1,width=1,command=lambda coord=(x,y): self.passInput(coord))
@@ -66,7 +75,7 @@ class guiPlayerAgent(baseAgent):
         for x in range(self.state.length()):
             Grid.columnconfigure(self.frame, x, weight=1)
 
-        for y in range(self.state.length()):
+        for y in range(self.state.height()):
             Grid.rowconfigure(self.frame, y, weight=1)
         return
 

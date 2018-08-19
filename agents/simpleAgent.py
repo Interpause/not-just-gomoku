@@ -2,8 +2,7 @@ from agents.baseAgent import baseAgent
 class simpleAgent(baseAgent):
 
     def getMove(self,state=None):
-        super().getMove(state)
-        cur = None
+        cur = super().getMove(state)
         best = self.intMin
         for space in state.spaces():
             score = self.reflexEvaluate(space)

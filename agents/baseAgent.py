@@ -1,13 +1,14 @@
 from heuristics import *
 from itertools import cycle,islice,dropwhile
+from random import choice
 class baseAgent(object):
 
-    def __init__(self,state,piece,ordlist,heuristics = {lineHeuristic:{},blockHeuristic:{},openHeuristic:{}},negligable=0.001):
+    def __init__(self,state,piece,ordlist,heuristics=None,negligable=0.001):
         self.state = state
         self.piece = piece
         self.curPiece = ordlist[0]
         self.ordlist = ordlist
-        self.heuristics = heuristics
+        self.heuristics = {lineHeuristic:{},blockHeuristic:{},openHeuristic:{}} if heuristics == None else heuristics
         self.negligable = negligable
         self.intMin = -2147483648
         self.intMax = 2147483647
@@ -40,4 +41,8 @@ class baseAgent(object):
     def getMove(self,state=None):
         if state != None: self.update(state,self.piece)
         else: state = self.state
-        return
+        return choice(state.spaces())
+
+    #for inheritors to implement
+    def onWin(self,winner):
+        pass
