@@ -1,4 +1,4 @@
-# not-just-gomoku
+# Not Just Gomoku
 <div>
   <h3>LICENSE</h3>
   <p>You are permitted to download the application and try it out as well as give feedback. However, you are not allowed to utilize the code for any purposes of your own. I specified the license as none as this is currently a one person pet project.</p>
