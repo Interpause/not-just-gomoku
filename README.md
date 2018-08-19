@@ -6,7 +6,7 @@
 
 <div>
   <h3>DESCRIPTION</h3>
-  <p>It is basically Gomoku, but with a board of any specified size, any specified number of players and any specified number of pieces in a row to win. </p>
+  <p>It is basically Gomoku, but with a board of any specified size, any specified number of players and any specified number of pieces in a row to win. Run game.py basically and modify the settings there to try out stuff.</p>
 </div>
 
 <div>
