@@ -35,8 +35,8 @@ class Game():
                         done = True
                         if not silent:
                             print("%s placed %s at (%d,%d)."%(agent.__name__,self.pieces[i],coord[0],coord[1]))
-                            #print(lineHeuristic(self.state,self.pieces[i],coord))
-                            #print(blockHeuristic(self.state,self.pieces[i],coord))
+                            print(lineHeuristic(self.state,self.pieces[i],coord))
+                            print(blockHeuristic(self.state,self.pieces[i],coord))
                     except KeyboardInterrupt:
                         if self.onKeyboardInterrupt():
                             return
@@ -71,12 +71,13 @@ if __name__ == "__main__":
     import agents.simpleAgent as AI
     import agents.maxAgent as AI2
     import time
-    #AI2.maxAgent
-    #AI.simpleAgent
-    #player.playerAgent
     #a = Game(5,5,5,[player.playerAgent,player.playerAgent])
 
+    #Dont differentiate between OXXXO, XXOXX, XXXXO, XOXXX, XOXXO, XOOXX, etc... thats emergent behaviour
+    #^no strategy above for line formation, but strategy for block formation, make block heuristic take consecutive
     #Heuristics
+        #SOMEHOW FIXED THE BLOCK HEURISTIC
+        #DONT TOUCH THE MAXAGENT CODE, SOMEHOW WORKS WELL NOW AND IS DECENTLY FUN
         #Template and inherit heuristics
         #Generally split heuristics into functions for less repetition
         #Create keyword options
@@ -87,6 +88,8 @@ if __name__ == "__main__":
             #what if the agents start going for scenarios that allow them 5 wins at once?
             #r/hmm
         #Block Heuristic
+            #Solved buggy behaviour. Checks if potlen is high enough before any special cases
+            #Scratch that didnt solve anything
             #Anything less than 5 is buggy
             #Figure out why maxAgent prefers blocking opportunities to blocking
             #Maybe give score based on proximity to actual chain?
@@ -124,23 +127,22 @@ if __name__ == "__main__":
             #maxAgent but non-prioritising
             #^figure out how to prevent expectiAgent from being ungodly slow
         #MaxAgent
-            #Factor in reducing opponent's state utility (can be done at simulation part)
-            #Does 1 - dim filtering block out special case absolute scores?
-                #hmm it seems to work like some sort of difficulty control.
-                #broken blockHeuristic still messing things up though
-                    #makes maxAgents prediction of optimal move off
             #Main weakness: opponents not playing optimally
-                #yet the reflex agent is suffering the same dont block just wait glitch?
         #Use flagging for agents
             #Agents can effectively be own threads now.
 
     #Game
         #Update each agent's state each turn
         #Use flagging for agents
-    
+
+    #AI2.maxAgent
+    #AI.simpleAgent
+    #player.playerAgent
+    #player.getMove
     while(True):
         player = P.guiPlayerAgent(10,10)
         start = time.time()
-        a = Game(10,10,5,[player.getMove,AI.simpleAgent],silent = False)
+        a = Game(10,10,5,[player.getMove,AI2.maxAgent],silent = False)
         end = time.time()
         print(end - start)
+        break

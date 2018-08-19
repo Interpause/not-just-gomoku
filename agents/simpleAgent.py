@@ -9,5 +9,6 @@ def simpleAgent(state,piece,ordlist,heuristics = [lineHeuristic,blockHeuristic])
         if score > cur:
             cur = score
             best = space
+    print("%s SCORE RN %d"%(piece,cur))
     return best
                     

@@ -1,290 +1,103 @@
-largenum = 1000000
+largenum = (10**4)*2
 winbonus = 1*largenum
 dangerbonus = 1.01*largenum
 fatalbonus = 1.21*largenum
 #best one i could conceive
 def lineHeuristic(state,piece,coord):
-    score = 0
+    #mul should be -1, 0 or 1 only. Else interesting behaviour (new mechanic?)
+    def score(grid,xmul,ymul):
+        def count(grid,xmul,ymul):
+            maxlen = 1
+            actlen = 1
+            for i in range(1,state.winnum()):
+                x = coord[0]+i*xmul
+                y = coord[1]+i*ymul
+                if x >= state.length() or y >= state.height() or x < 0 or y < 0:
+                    break
+                spot = grid[y][x]
+                if spot == piece:
+                    actlen += 1
+                elif spot == None:
+                    pass
+                else:
+                    break
+                maxlen += 1
+            return (maxlen,actlen)
+        
+        def evaluate(maxlen,actlen):
+            score = 0
+            if actlen == state.winnum():
+                score += winbonus
+            if maxlen >= state.winnum() and state.winnum() > actlen and actlen > 1:
+                score += int((actlen/state.winnum()*10)**4)
+            return score
+        
+        dir1 = count(grid,xmul,ymul)
+        dir2 = count(grid,-xmul,-ymul)
+        return evaluate(dir1[0]+dir2[0]-1,dir1[1]+dir2[1]-1)
+        
+    tscore = 0
     grid = state.grid()
-    #check hori
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]
-        if x >= state.length():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]
-        if x < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    if actlen == state.winnum():
-        return winbonus
-    if potlen >= state.winnum() and actlen > 1:
-        score += int((actlen/state.winnum()*100)**2)
-    #print("HORI POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    #check vert
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]
-        y = coord[1]+i
-        if y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]
-        y = coord[1]-i
-        if y < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    if actlen == state.winnum():
-        return winbonus
-    if potlen >= state.winnum() and actlen > 1:
-        score += int((actlen/state.winnum()*100)**2)
-    #print("VERT POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    #check rdiag
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]+i
-        if x >= state.length() or y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]-i
-        if x < 0 or y < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    if actlen == state.winnum():
-        return winbonus
-    if potlen >= state.winnum() and actlen > 1:
-        score += int((actlen/state.winnum()*100)**2)
-    #print("RDIAG POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))    
-    #check ldiag
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]-i
-        if y < 0 or x >= state.length():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-            break
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]+i
-        if x < 0 or y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            actlen += 1
-        elif spot == None:
-            pass
-        else:
-             break
-        potlen += 1        
-    if actlen == state.winnum():
-        return winbonus
-    if potlen >= state.winnum() and actlen > 1:
-        score += int((actlen/state.winnum()*100)**2)
-    #print("LDIAG POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    return score
 
-#-2 when low priority end game, -1 when game over. logic fails on 3x3 (unsupported)
+    tscore += score(grid,1,0)
+    if tscore >= winbonus:
+        return tscore
+    tscore += score(grid,0,1)
+    if tscore >= winbonus:
+        return tscore
+    tscore += score(grid,1,1)
+    if tscore >= winbonus:
+        return tscore
+    tscore += score(grid,1,-1)
+
+    return tscore
+
 def blockHeuristic(state,piece,coord):
     score = 0
     grid = state.grid()
-    #check hori
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]
-        if x >= state.length():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]
-        if x < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    if actlen == state.winnum()-1:
-        return fatalbonus
-    if actlen == state.winnum()-2:
-        return dangerbonus
-    if actlen == state.winnum():
-        return 0
-    if potlen >= state.winnum():
-        score += int((actlen/state.winnum()*99)**2)
-    #print("HORI POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    #check vert
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]
-        y = coord[1]+i
-        if y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]
-        y = coord[1]-i
-        if y < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    if actlen == state.winnum()-1:
-        return fatalbonus
-    if actlen == state.winnum()-2:
-        return dangerbonus
-    if actlen == state.winnum():
-        return 0
-    if potlen >= state.winnum():
-        score += int((actlen/state.winnum()*99)**2)
-    #print("VERT POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    #check rdiag
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]+i
-        if x >= state.length() or y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]-i
-        if x < 0 or y < 0:
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    if actlen == state.winnum()-1:
-        return fatalbonus
-    if actlen == state.winnum()-2:
-        return dangerbonus
-    if actlen == state.winnum():
-        return 0
-    if potlen >= state.winnum():
-        score += int((actlen/state.winnum()*99)**2)
-    #print("RDIAG POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))    
-    #check ldiag
-    potlen = 1
-    actlen = 1
-    for i in range(1,state.winnum()):
-        x = coord[0]+i
-        y = coord[1]-i
-        if y < 0 or x >= state.length():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1
-    for i in range(1,state.winnum()):
-        x = coord[0]-i
-        y = coord[1]+i
-        if x < 0 or y >= state.height():
-            break
-        spot = grid[y][x]
-        if spot == piece:
-            break
-        elif spot != None:
-            actlen += 1
-        potlen += 1        
-    if actlen == state.winnum()-1:
-        return fatalbonus
-    if actlen == state.winnum()-2:
-        return dangerbonus
-    if actlen == state.winnum():
-        return 0
-    if potlen >= state.winnum():
-        score += int((actlen/state.winnum()*99)**2)
-    #print("LDIAG POTLEN %d, ACTLEN %d, CURRENT SCORE %d" %(potlen,actlen,score))
-    return score
+    #mul should be -1, 0 or 1 only. Else interesting behaviour (new mechanic?)
+    def score(grid,xmul,ymul):
+        def count(grid,xmul,ymul):
+            maxlen = 0
+            actlen = 0
+            blocked = False
+            cur_op = None
+            for i in range(1,state.winnum()):
+                x = coord[0]+i*xmul
+                y = coord[1]+i*ymul
+                if x >= state.length() or y >= state.height() or x < 0 or y < 0:
+                    break
+                spot = grid[y][x]
+                if spot == piece:
+                    break
+                elif spot != None:
+                    if cur_op == None:
+                        cur_op = spot
+                    elif spot != cur_op:
+                        break
+                    actlen += 1
+                maxlen += 1
+            return (maxlen,actlen)
+        
+        def evaluate(maxlen,actlen):
+            score = 0
+            if maxlen >= state.winnum():
+                score += int((((actlen/state.winnum()))*10)**4)
+            return score
+        
+        dir1 = count(grid,xmul,ymul)
+        dir2 = count(grid,-xmul,-ymul)
+        return evaluate(dir1[0]+dir2[0],dir1[1]+dir2[1])
+        
+    tscore = 0
+    grid = state.grid()
+
+    tscore += score(grid,1,0)
+    tscore += score(grid,0,1)
+    tscore += score(grid,1,1)
+    tscore += score(grid,1,-1)
+
+    return tscore*2
 
 def openHeuristic(board,piece,empty,winrowno):
     height = len(board)
