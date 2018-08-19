@@ -10,7 +10,7 @@ class state():
         self.__height = height
         self.__length = length
         self.__pieces = pieces
-        self.__empty = list(product(range(height),range(length)))
+        self.__empty = list(product(range(length),range(height)))
         self.__board = dict([(piece,[]) for piece in pieces])
         self.__grid = [[None for x in range(length)] for y in range(height)]
 

@@ -1,74 +1,65 @@
-from itertools import cycle,islice,dropwhile
 from copy import deepcopy
-from heuristics import *
-#Yay, its actually smarter than simpleAgent unlike the old version. Now... Well it needs to be optimized for speed.
-#Wow it functioned better without block heuristic. Actually no it still needs a block heuristic
-def maxAgent(state,piece,ordpieces,heuristics = [lineHeuristic,blockHeuristic], finLayer=1,dim=0.5,blocking=1,*args,**kwargs):
+from agents.baseAgent import baseAgent
+from random import choice
+class maxAgent(baseAgent):
 
-    #reflex evaluation
-    def evaluate(state,piece):
-        best = (0,0)
-        cur = -9999999
+    def __init__(self,*args,depth=1,dim=0.5,salt=1,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.depth = depth
+        self.dim = dim
+        self.salt = salt
+        return
+
+    #helper functions
+    def reflexStateEvaluate(self,state,piece):
+        cur = None
+        best = self.intMin
         for space in state.spaces():
-            score = reflex(state,piece,space)
-            if score > cur:
-                cur = score
-                best = space
-        return (best,cur)
+            score = self.reflexEvaluate(space,piece=piece,state=state)
+            if score > best:
+                best = score
+                cur = space
+            elif self.fequal(score,best):
+                cur = choice([space,cur])
+        return (cur,best)
 
-    def reflex(state,piece,space):
-        score = 0
-        for heuristic in heuristics:
-            score += heuristic(state,piece,space)
-        return score
-    
-    #had to start annotating cause i am literally mentally coming up with this no tutorial
-    def getOptimal(state,piece,curLayer=0):
-        if curLayer == finLayer:
-            return evaluate(state,piece)
-
-        best = (0,0)
-        cur = -9999999
+    def getOptimal(self,state,piece,curDepth=0):
+        if curDepth == self.depth: return self.reflexStateEvaluate(state,piece)
+        cur = None
+        best = self.intMin
         for space in state.spaces():
-            
             score = 0
-            score += reflex(state,piece,space)
-            #filtering
-            if score < cur*(1-dim):
-                continue
+            score += self.reflexEvaluate(space,piece=piece,state=state)
+            if score < best*(1-self.dim): continue
             
-            #shared among each turn of players (cause references are useful)
             dupe = deepcopy(state)
-            dupe.place(piece,space) #its testing move
+            dupe.place(piece,space)
             if dupe.full():
-                cur = score
-                best = space
+                best = score
+                cur = space
                 break
-                        
-            #turn list starting after its own play
-            others = list(islice(dropwhile(lambda x:x!=piece,cycle(ordpieces)),len(ordpieces)))[1:]
 
-            #simulates how enemy (in order of course) would place using same algorithm
-            for other in others:
-                enemy = getOptimal(dupe,other,curLayer+1)
+            others = self.getNextList(piece)
+            point_loss = 0
+            for n,other in enumerate(others):
+                enemy = self.getOptimal(dupe,other,curDepth+1)
+                point_loss += self.salt*enemy[1]
                 dupe.place(other,enemy[0])
-                score -= int(blocking*enemy[1])
-                #print(blocking*enemy[1])
-                if dupe.full():
-                    break
+                if dupe.full(): break
+            score -= point_loss/(n+1)
+            score += self.getOptimal(dupe,piece,curDepth+1)[1]*self.dim
+            if score > best:
+                best = score
+                cur = space
+            elif self.fequal(score,best):
+                cur = choice([space,cur])
+            elif best == self.intMin:
+                best = score
+                cur = space
+        return (cur,best)
 
-            
-            #using dupe state, sees future move viability
-            score += getOptimal(dupe,piece,curLayer+1)[1]*dim
-            #print(future)
-            if score > cur:
-                cur = score
-                best = space
-            if cur == -9999999:
-                best = space
-                cur = score
-                
-        return (best,cur)
-            
-    return getOptimal(state,piece)[0]
-    
+    #Extendables
+    #getter
+    def getMove(self,state=None):
+        super().getMove(state=state)
+        return self.getOptimal(state,self.piece)[0]

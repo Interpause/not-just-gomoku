@@ -1,120 +1,111 @@
 from game_exceptions import *
 from heuristics import *
+import state
 class Game():
-
-    def onKeyboardInterrupt(self):
-        ans = input("Are you sure you want to quit? (Y)")
-        if ans == 'y' or ans == 'Y':
-            print("Game Over!~")
-            return True
-        return False
     
     def __init__(self,height,length,winnum,agents,silent=False):
-        import state
-        self.pieces = ["X","■","□","○","●","▵","▴"]#TODO: think of more
-        self.state = state.state(height,length,winnum,self.pieces[:len(agents)])
-        win = False
-        while(not win):
-            for i, agent in enumerate(agents):
-                try:
-                    if not silent:
-                        print("\n"*(height+3))
-                        print("%s (Piece: %s, ID: %d)'s Turn!!!"%(agent.__name__,self.pieces[i],i))
-                        print(self.state)
-                    done = False
-                except KeyboardInterrupt:
-                    if onKeyboardInterrupt():
-                        return
-                    else:
-                        i-=1
-                        continue
-                while(not done):
-                    try:
-                        coord = agent(self.state,self.pieces[i],self.pieces[:len(agents)])
-                        self.state.place(self.pieces[i],coord)
-                        done = True
-                        if not silent:
-                            print("%s placed %s at (%d,%d)."%(agent.__name__,self.pieces[i],coord[0],coord[1]))
-                            print(lineHeuristic(self.state,self.pieces[i],coord))
-                            print(blockHeuristic(self.state,self.pieces[i],coord))
-                    except KeyboardInterrupt:
-                        if self.onKeyboardInterrupt():
-                            return
-                    except OutOfBoundsException:
-                        if not silent:
-                            print("Those coordinates are out of bounds!")
-                    except OutOfSpaceException:
-                        if not silent:
-                            print("The board is full and the game hasnt ended?")
-                    except SpaceTakenException:
-                        if not silent:
-                            print("Space is taken!")
-                    except BaseException as e:
-                        if not silent:
-                            print("Something went wrong!")
-                        print(e)
-                        return
-                winner = self.state.isWin()
-                if winner != True and winner != False:
-                    print("%s (Piece: %s, ID: %d) wins!!!"%(agents[self.pieces.index(winner)].__name__,winner,self.pieces.index(winner)))
-                    win = True
-                    self.win = winner
-                    return
-                if winner == True:
-                    print("The board is full!!! ITS A DRAW")
-                    win = True
-                    return                  
-                              
-if __name__ == "__main__":
-    import agents.playerAgent as player
-    import agents.guiPlayerAgent as P
-    import agents.simpleAgent as AI
-    import agents.maxAgent as AI2
-    import time
-    #a = Game(5,5,5,[player.playerAgent,player.playerAgent])
+        self.pieces = ["X","■","□","○","●","▵","▴"]#TODO: think of more. These are fine and can be treated as enums
+        self.ordlist = self.pieces[:len(agents)]
+        self.state = state.state(height,length,winnum,self.ordlist)
+        self.win = False
+        self.silent = silent
+        self.agents = [agent(self.state,self.pieces[i],self.ordlist) for i,agent in enumerate(agents)] #initializes all the agents
 
-    #Dont differentiate between OXXXO, XXOXX, XXXXO, XOXXX, XOXXO, XOOXX, etc... thats emergent behaviour
-    #^no strategy above for line formation, but strategy for block formation, make block heuristic take consecutive
+    #main code
+    def update(self):
+        for agent in self.agents:
+            if self.win != False: return
+            self.log("\n"*(self.state.height()+3))
+            self.log("%s (Piece: %s)'s Turn!!!"%(self.getName(agent),agent.piece))
+            self.log(self.state)
+            
+            #try:
+            self.takeTurn(agent)
+            #except BaseException as e:
+            #    self.log("Something went wrong!")
+            #    self.log(e)
+            #    self.win = None
+                
+            self.checkWin()       
+        return
+
+    def takeTurn(self,agent):
+        done = False
+        for other in self.agents:
+            start = time.time()
+            other.update(self.state,agent.piece)
+            end = time.time()
+            self.log("%s took %fs to update."%(self.getName(other),end-start))
+        while(not done):
+            try:
+                start = time.time()
+                coord = agent.getMove(self.state)
+                end = time.time()
+                self.log("%s took %fs to decide."%(self.getName(agent),end-start))
+                for heuristic in agent.heuristics: self.log("%s's score: %f" % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+                self.state.place(agent.piece,coord)
+                done = True
+                
+                self.log("%s placed %s at (%d,%d)."%(self.getName(agent),agent.piece,coord[0],coord[1]))
+
+            except OutOfBoundsException: self.log("Those coordinates are out of bounds!")
+            except OutOfSpaceException: self.log("The board is full and the game hasnt ended?")
+            except SpaceTakenException: self.log("Space is taken!")
+            except KeyboardInterrupt:
+                if self.onKeyboardInterrupt():
+                    return
+        return
+
+    def checkWin(self):
+        winner = self.state.isWin()
+        if winner != True and winner != False:
+                for agent in self.agents:
+                    if agent.piece == winner:
+                        winner = agent
+                        break
+                print("%s (Piece: %s) wins!!!"%(self.getName(winner),winner.piece))
+                self.win = winner.piece
+        elif winner == True:
+                print("The board is full!!! ITS A DRAW")
+                self.win = None
+        return
+            
+    #helper functions
+    #KeyboardInterrupt handler
+    def onKeyboardInterrupt(self):
+        try:
+            ans = input("Are you sure you want to quit? (Y)")
+        except KeyboardInterrupt:
+            return self.onKeyboardInterrupt()
+        if ans == 'y' or ans == 'Y':
+            print("Game Over!~")
+            self.win = None
+            return True
+        else:
+            print("So be it.")
+            return False
+        return
+
+    def getName(self,obj):
+            return type(obj).__name__
+
+    def log(self,msg):
+        if self.silent: return
+        print(msg)
+        return
+    
+if __name__ == "__main__":
     #Heuristics
-        #SOMEHOW FIXED THE BLOCK HEURISTIC
-        #DONT TOUCH THE MAXAGENT CODE, SOMEHOW WORKS WELL NOW AND IS DECENTLY FUN
-        #Template and inherit heuristics
-        #Generally split heuristics into functions for less repetition
-        #Create keyword options
-            #custom score formula
-            #specify absolute or relative values of special cases (win, lose, danger, etc)
-            #specify weight
-        #Absolutes shouldnt immediately return.
-            #what if the agents start going for scenarios that allow them 5 wins at once?
-            #r/hmm
-        #Block Heuristic
-            #Solved buggy behaviour. Checks if potlen is high enough before any special cases
-            #Scratch that didnt solve anything
-            #Anything less than 5 is buggy
-            #Figure out why maxAgent prefers blocking opportunities to blocking
-            #Maybe give score based on proximity to actual chain?
-            #maybe try making a new block heuristic from scratch
-            #Double check it actually checks both sides are sealed
-            #seems aggressive about blocking (i amped the defaults) but gives up past a point???
-            #Differentiate between for danger and fatal (might be main problem):
-                #OXXXO, XXOXX, XXXXO, XOXXX, XOXXO, XOOXX
-            #Seems to love BOXXXOB cause can get lots of block points without doing anything?
-        #Cluster Heuristic
+        #Cluster Heuristic #Falls under foresight tho. maxAgent naturally spaces weirdly.
             #Determines when piece is too surrounded
             #Determines when good idea to move away from cluster
             #Acts as start piece strategic randomnizer
             #Encourages directing the flow rather than following it
-        #Line Heuristic
-            #Prefer diagonals, combined with cluster heuristic = good strategy
         #Space Heuristic (may be unused)
             #Broadly assumes which spaces arent worth trying out
         #Create a set of state heuristics
-        #Create support for the eventual markovAgent
 
     #Agents
-        #Make agents into classes
-            #BaseAgent inheritance
-            #Each agent keeps image of state
         #Agent options
             #default handtuned options
             #user specified options
@@ -123,26 +114,31 @@ if __name__ == "__main__":
             #only agent to not utilize default/handtuned options for heuristics
             #inherits from maxAgent?
             #uses sigmoid network to adjust best weights, score formulae and special case scores
+            #needs two set of special options, one for itself and one for its opponent if based on maxAgent
+        #extendedMarkovAgent
+            #based on markovAgent, but creates multiple competing models to predict opponents playstyle
         #expectiAgent
             #maxAgent but non-prioritising
             #^figure out how to prevent expectiAgent from being ungodly slow
-        #MaxAgent
-            #Main weakness: opponents not playing optimally
-        #Use flagging for agents
-            #Agents can effectively be own threads now.
+        #maxThreadedAgent
+            #accidentally coded similar to a expectiagent
+            #extremely ungodly incredibly slow
 
-    #Game
-        #Update each agent's state each turn
-        #Use flagging for agents
 
+    from agents.guiPlayerAgent import guiPlayerAgent as player
+    from agents.simpleAgent import simpleAgent as simple
+    from agents.maxThreadedAgent import maxThreadedAgent as maxy
+    from agents.maxAgent import maxAgent as maxx
+    import time
+    
     #AI2.maxAgent
     #AI.simpleAgent
     #player.playerAgent
-    #player.getMove
     while(True):
-        player = P.guiPlayerAgent(10,10)
         start = time.time()
-        a = Game(10,10,5,[player.getMove,AI2.maxAgent],silent = False)
+        main = Game(8,8,5,[simple,maxx,simple],silent = False)
+        while(main.win==False):
+            main.update()
         end = time.time()
         print(end - start)
         break
