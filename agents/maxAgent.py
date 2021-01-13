@@ -2,6 +2,14 @@ from copy import deepcopy
 from agents.baseAgent import baseAgent
 from random import choice
 class maxAgent(baseAgent):
+    '''Agent that assumes opponents always play optimally and use that to deeply calculate state rewards.
+    
+    Attributes:
+        depth (int): How many turns into the future to predict.
+        dim (float): Decrease in reward the further one goes into the future due to uncertainty.
+        salt (float): How much to penalize the agent for letting the opponent make a good move. High salt values make agents try and prevent the opponent from doing well at all times and can appear as "saltiness".
+    
+    '''
 
     def __init__(self,*args,depth=1,dim=0.5,salt=1,**kwargs):
         super().__init__(*args,**kwargs)
@@ -12,6 +20,8 @@ class maxAgent(baseAgent):
 
     #helper functions
     def reflexStateEvaluate(self,state,piece):
+        '''Shallow evaluates state reward using action rewards possible.'''
+
         cur = None
         best = self.intMin
         for space in state.spaces():
@@ -24,6 +34,8 @@ class maxAgent(baseAgent):
         return (cur,best)
 
     def getOptimal(self,state,piece,curDepth=0):
+        '''Recursive function that deeply evaluates state reward over multiple turns.'''
+
         if curDepth == self.depth: return self.reflexStateEvaluate(state,piece)
         cur = None
         best = self.intMin

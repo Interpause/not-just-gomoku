@@ -1,9 +1,30 @@
 from game_exceptions import *
 from heuristics import *
 import state
+
 class Game():
-    
+    '''the game session.
+
+    Attributes:
+        pieces (str[]): The player pieces used in the game. Hardcoded in unfortunately.
+        ordlist (str[]): The order in which the pieces play.
+        state (State): The game's state.
+        win (str|bool): The piece that won or False if no one has won yet.
+        silent (bool): Whether to log status messages.
+        agents (list): A list of the agents playing the game.
+    '''
+
     def __init__(self,height,length,winnum,agents,silent=False):
+        '''Constructor for the game session.
+
+        Args:
+            height (int): The height of the grid.
+            length (int): The length of the grid.
+            winnum (int): The number of pieces in a line to win.
+            agents (list): A list of game agent classes to use.
+            slient (bool): Whether to log status messages.
+        '''
+
         self.pieces = ["X","■","□","○","●","▵","▴"]#TODO: think of more. These are fine and can be treated as enums
         self.ordlist = self.pieces[:len(agents)]
         self.state = state.state(height,length,winnum,self.ordlist)
@@ -13,6 +34,8 @@ class Game():
 
     #main code
     def update(self):
+        '''Runs a round, allowing each agent to take their turn.'''
+
         for agent in self.agents:
             if self.win != False: return
             self.log("\n"*(self.state.height()+3))
@@ -30,6 +53,8 @@ class Game():
         return
 
     def takeTurn(self,agent):
+        '''Takes the turn for that agent.'''
+
         done = False
         while(not done):
             try:
@@ -50,6 +75,8 @@ class Game():
         return
 
     def updateAgents(self,piece):
+        '''Passes the updated state and turn to each agent.'''
+
         for other in self.agents:
             start = time.time()
             other.update(self.state,piece)
@@ -58,6 +85,8 @@ class Game():
         return
 
     def getMove(self,agent):
+        '''Gets the move played by the agent.'''
+
         start = time.time()
         coord = agent.getMove(self.state)
         end = time.time()
@@ -65,6 +94,8 @@ class Game():
         return coord
     
     def checkWin(self):
+        '''Check which piece has won and sets self.win to that piece.'''
+
         winner = self.state.isWin()
         if winner != True and winner != False:
                 for agent in self.agents:

@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>not-just-gomoku.game API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>not-just-gomoku.game</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from game_exceptions import *
+from heuristics import *
+import state
+
+class Game():
+    &#39;&#39;&#39;the game session.
+
+    Attributes:
+        pieces (str[]): The player pieces used in the game. Hardcoded in unfortunately.
+        ordlist (str[]): The order in which the pieces play.
+        state (State): The game&#39;s state.
+        win (str|bool): The piece that won or False if no one has won yet.
+        silent (bool): Whether to log status messages.
+        agents (list): A list of the agents playing the game.
+    &#39;&#39;&#39;
+
+    def __init__(self,height,length,winnum,agents,silent=False):
+        &#39;&#39;&#39;Constructor for the game session.
+
+        Args:
+            height (int): The height of the grid.
+            length (int): The length of the grid.
+            winnum (int): The number of pieces in a line to win.
+            agents (list): A list of game agent classes to use.
+            slient (bool): Whether to log status messages.
+        &#39;&#39;&#39;
+
+        self.pieces = [&#34;X&#34;,&#34;■&#34;,&#34;□&#34;,&#34;○&#34;,&#34;●&#34;,&#34;▵&#34;,&#34;▴&#34;]#TODO: think of more. These are fine and can be treated as enums
+        self.ordlist = self.pieces[:len(agents)]
+        self.state = state.state(height,length,winnum,self.ordlist)
+        self.win = False
+        self.silent = silent
+        self.agents = [agent(self.state,self.pieces[i],self.ordlist) for i,agent in enumerate(agents)] #initializes all the agents
+
+    #main code
+    def update(self):
+        &#39;&#39;&#39;Runs a round, allowing each agent to take their turn.&#39;&#39;&#39;
+
+        for agent in self.agents:
+            if self.win != False: return
+            self.log(&#34;\n&#34;*(self.state.height()+3))
+            self.log(&#34;%s (Piece: %s)&#39;s Turn!!!&#34;%(self.getName(agent),agent.piece))
+            self.log(self.state)
+            
+            #try:
+            self.takeTurn(agent)
+            #except BaseException as e:
+            #    self.log(&#34;Something went wrong!&#34;)
+            #    self.log(e)
+            #    self.win = None
+                
+            self.checkWin()       
+        return
+
+    def takeTurn(self,agent):
+        &#39;&#39;&#39;Takes the turn for that agent.&#39;&#39;&#39;
+
+        done = False
+        while(not done):
+            try:
+                self.updateAgents(agent.piece)
+                coord = self.getMove(agent)
+                self.state.place(agent.piece,coord)
+                done = True
+                
+                self.log(&#34;%s placed %s at (%d,%d).&#34;%(self.getName(agent),agent.piece,coord[0],coord[1]))
+                for heuristic in agent.heuristics: self.log(&#34;%s&#39;s score: %f&#34; % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+                
+            except OutOfBoundsException: self.log(&#34;Those coordinates are out of bounds!&#34;)
+            except OutOfSpaceException: self.log(&#34;The board is full and the game hasnt ended?&#34;)
+            except SpaceTakenException: self.log(&#34;Space is taken!&#34;)
+            except KeyboardInterrupt:
+                if self.onKeyboardInterrupt():
+                    return
+        return
+
+    def updateAgents(self,piece):
+        &#39;&#39;&#39;Passes the updated state and turn to each agent.&#39;&#39;&#39;
+
+        for other in self.agents:
+            start = time.time()
+            other.update(self.state,piece)
+            end = time.time()
+            self.log(&#34;%s took %fs to update.&#34;%(self.getName(other),end-start))
+        return
+
+    def getMove(self,agent):
+        &#39;&#39;&#39;Gets the move played by the agent.&#39;&#39;&#39;
+
+        start = time.time()
+        coord = agent.getMove(self.state)
+        end = time.time()
+        self.log(&#34;%s took %fs to decide.&#34;%(self.getName(agent),end-start))
+        return coord
+    
+    def checkWin(self):
+        &#39;&#39;&#39;Check which piece has won and sets self.win to that piece.&#39;&#39;&#39;
+
+        winner = self.state.isWin()
+        if winner != True and winner != False:
+                for agent in self.agents:
+                    if agent.piece == winner:
+                        winner = agent
+                        break
+                print(&#34;%s (Piece: %s) wins!!!&#34;%(self.getName(winner),winner.piece))
+                self.win = winner.piece
+        elif winner == True:
+                print(&#34;The board is full!!! ITS A DRAW&#34;)
+                self.win = None
+        self.updateAgents(self.win)
+        for agent in self.agents: agent.onWin(self.win)
+        return
+            
+    #helper functions
+    #KeyboardInterrupt handler
+    def onKeyboardInterrupt(self):
+        try:
+            ans = input(&#34;Are you sure you want to quit? (Y)&#34;)
+        except KeyboardInterrupt:
+            return self.onKeyboardInterrupt()
+        if ans == &#39;y&#39; or ans == &#39;Y&#39;:
+            print(&#34;Game Over!~&#34;)
+            self.win = None
+            return True
+        else:
+            print(&#34;So be it.&#34;)
+            return False
+        return
+
+    def getName(self,obj):
+            return type(obj).__name__
+
+    def log(self,msg):
+        if self.silent: return
+        print(msg)
+        return
+    
+if __name__ == &#34;__main__&#34;:
+    #Heuristics
+        #Cluster Heuristic #Falls under foresight tho. maxAgent naturally spaces weirdly.
+            #Determines how to strategically cluster pieces
+            #Encourages directing the flow rather than following it
+        #Create a set of state heuristics
+
+    #Agents
+        #markovAgent
+            #only agent to not utilize default/handtuned options for heuristics
+            #uses sigmoid network to adjust best weights, score formulae and special case scores
+            #needs two set of special options, one for itself and one for its opponent if based on maxAgent
+        #extendedMarkovAgent
+            #based on markovAgent, but creates multiple competing models to predict opponents playstyle
+        #expectiAgent
+            #maxAgent but non-prioritising
+            #^figure out how to prevent expectiAgent from being ungodly slow
+        #maxThreadedAgent
+            #fix one day
+
+
+    from agents.guiPlayerAgent import guiPlayerAgent as player
+    from agents.simpleAgent import simpleAgent as sim
+    from agents.markovSimpleAgent import markovSimpleAgent as simM
+    from agents.maxThreadedAgent import maxThreadedAgent as maxy
+    from agents.maxAgent import maxAgent as maxx
+    from agents.baseAgent import baseAgent as whywouldyou
+    import time
+    from threading import Thread
+    
+    #AI2.maxAgent
+    #AI.simpleAgent
+    #player.playerAgent
+        
+    while(True):
+        start = time.time()
+        main = Game(10,10,5,[maxx,sim,player],silent = False)
+        done = False
+        def autorestart():
+            loops = 0
+            while not done:
+                time.sleep(5)
+                loops+=1
+                if loops==36000:
+                    main.win = None
+                    break
+        while(main.win==False):
+            done = False
+            Thread(target=autorestart).start()
+            main.update()
+            done = True
+        end = time.time()
+        print(end - start)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="not-just-gomoku.game.Game"><code class="flex name class">
+<span>class <span class="ident">Game</span></span>
+<span>(</span><span>height, length, winnum, agents, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>the game session.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pieces</code></strong> :&ensp;<code>str[]</code></dt>
+<dd>The player pieces used in the game. Hardcoded in unfortunately.</dd>
+<dt><strong><code>ordlist</code></strong> :&ensp;<code>str[]</code></dt>
+<dd>The order in which the pieces play.</dd>
+<dt><strong><code>state</code></strong> :&ensp;<code>State</code></dt>
+<dd>The game's state.</dd>
+<dt>win (str|bool): The piece that won or False if no one has won yet.</dt>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to log status messages.</dd>
+<dt><strong><code>agents</code></strong> :&ensp;<code>list</code></dt>
+<dd>A list of the agents playing the game.</dd>
+</dl>
+<p>Constructor for the game session.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>height</code></strong> :&ensp;<code>int</code></dt>
+<dd>The height of the grid.</dd>
+<dt><strong><code>length</code></strong> :&ensp;<code>int</code></dt>
+<dd>The length of the grid.</dd>
+<dt><strong><code>winnum</code></strong> :&ensp;<code>int</code></dt>
+<dd>The number of pieces in a line to win.</dd>
+<dt><strong><code>agents</code></strong> :&ensp;<code>list</code></dt>
+<dd>A list of game agent classes to use.</dd>
+<dt><strong><code>slient</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to log status messages.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Game():
+    &#39;&#39;&#39;the game session.
+
+    Attributes:
+        pieces (str[]): The player pieces used in the game. Hardcoded in unfortunately.
+        ordlist (str[]): The order in which the pieces play.
+        state (State): The game&#39;s state.
+        win (str|bool): The piece that won or False if no one has won yet.
+        silent (bool): Whether to log status messages.
+        agents (list): A list of the agents playing the game.
+    &#39;&#39;&#39;
+
+    def __init__(self,height,length,winnum,agents,silent=False):
+        &#39;&#39;&#39;Constructor for the game session.
+
+        Args:
+            height (int): The height of the grid.
+            length (int): The length of the grid.
+            winnum (int): The number of pieces in a line to win.
+            agents (list): A list of game agent classes to use.
+            slient (bool): Whether to log status messages.
+        &#39;&#39;&#39;
+
+        self.pieces = [&#34;X&#34;,&#34;■&#34;,&#34;□&#34;,&#34;○&#34;,&#34;●&#34;,&#34;▵&#34;,&#34;▴&#34;]#TODO: think of more. These are fine and can be treated as enums
+        self.ordlist = self.pieces[:len(agents)]
+        self.state = state.state(height,length,winnum,self.ordlist)
+        self.win = False
+        self.silent = silent
+        self.agents = [agent(self.state,self.pieces[i],self.ordlist) for i,agent in enumerate(agents)] #initializes all the agents
+
+    #main code
+    def update(self):
+        &#39;&#39;&#39;Runs a round, allowing each agent to take their turn.&#39;&#39;&#39;
+
+        for agent in self.agents:
+            if self.win != False: return
+            self.log(&#34;\n&#34;*(self.state.height()+3))
+            self.log(&#34;%s (Piece: %s)&#39;s Turn!!!&#34;%(self.getName(agent),agent.piece))
+            self.log(self.state)
+            
+            #try:
+            self.takeTurn(agent)
+            #except BaseException as e:
+            #    self.log(&#34;Something went wrong!&#34;)
+            #    self.log(e)
+            #    self.win = None
+                
+            self.checkWin()       
+        return
+
+    def takeTurn(self,agent):
+        &#39;&#39;&#39;Takes the turn for that agent.&#39;&#39;&#39;
+
+        done = False
+        while(not done):
+            try:
+                self.updateAgents(agent.piece)
+                coord = self.getMove(agent)
+                self.state.place(agent.piece,coord)
+                done = True
+                
+                self.log(&#34;%s placed %s at (%d,%d).&#34;%(self.getName(agent),agent.piece,coord[0],coord[1]))
+                for heuristic in agent.heuristics: self.log(&#34;%s&#39;s score: %f&#34; % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+                
+            except OutOfBoundsException: self.log(&#34;Those coordinates are out of bounds!&#34;)
+            except OutOfSpaceException: self.log(&#34;The board is full and the game hasnt ended?&#34;)
+            except SpaceTakenException: self.log(&#34;Space is taken!&#34;)
+            except KeyboardInterrupt:
+                if self.onKeyboardInterrupt():
+                    return
+        return
+
+    def updateAgents(self,piece):
+        &#39;&#39;&#39;Passes the updated state and turn to each agent.&#39;&#39;&#39;
+
+        for other in self.agents:
+            start = time.time()
+            other.update(self.state,piece)
+            end = time.time()
+            self.log(&#34;%s took %fs to update.&#34;%(self.getName(other),end-start))
+        return
+
+    def getMove(self,agent):
+        &#39;&#39;&#39;Gets the move played by the agent.&#39;&#39;&#39;
+
+        start = time.time()
+        coord = agent.getMove(self.state)
+        end = time.time()
+        self.log(&#34;%s took %fs to decide.&#34;%(self.getName(agent),end-start))
+        return coord
+    
+    def checkWin(self):
+        &#39;&#39;&#39;Check which piece has won and sets self.win to that piece.&#39;&#39;&#39;
+
+        winner = self.state.isWin()
+        if winner != True and winner != False:
+                for agent in self.agents:
+                    if agent.piece == winner:
+                        winner = agent
+                        break
+                print(&#34;%s (Piece: %s) wins!!!&#34;%(self.getName(winner),winner.piece))
+                self.win = winner.piece
+        elif winner == True:
+                print(&#34;The board is full!!! ITS A DRAW&#34;)
+                self.win = None
+        self.updateAgents(self.win)
+        for agent in self.agents: agent.onWin(self.win)
+        return
+            
+    #helper functions
+    #KeyboardInterrupt handler
+    def onKeyboardInterrupt(self):
+        try:
+            ans = input(&#34;Are you sure you want to quit? (Y)&#34;)
+        except KeyboardInterrupt:
+            return self.onKeyboardInterrupt()
+        if ans == &#39;y&#39; or ans == &#39;Y&#39;:
+            print(&#34;Game Over!~&#34;)
+            self.win = None
+            return True
+        else:
+            print(&#34;So be it.&#34;)
+            return False
+        return
+
+    def getName(self,obj):
+            return type(obj).__name__
+
+    def log(self,msg):
+        if self.silent: return
+        print(msg)
+        return</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="not-just-gomoku.game.Game.checkWin"><code class="name flex">
+<span>def <span class="ident">checkWin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check which piece has won and sets self.win to that piece.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def checkWin(self):
+    &#39;&#39;&#39;Check which piece has won and sets self.win to that piece.&#39;&#39;&#39;
+
+    winner = self.state.isWin()
+    if winner != True and winner != False:
+            for agent in self.agents:
+                if agent.piece == winner:
+                    winner = agent
+                    break
+            print(&#34;%s (Piece: %s) wins!!!&#34;%(self.getName(winner),winner.piece))
+            self.win = winner.piece
+    elif winner == True:
+            print(&#34;The board is full!!! ITS A DRAW&#34;)
+            self.win = None
+    self.updateAgents(self.win)
+    for agent in self.agents: agent.onWin(self.win)
+    return</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.getMove"><code class="name flex">
+<span>def <span class="ident">getMove</span></span>(<span>self, agent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the move played by the agent.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getMove(self,agent):
+    &#39;&#39;&#39;Gets the move played by the agent.&#39;&#39;&#39;
+
+    start = time.time()
+    coord = agent.getMove(self.state)
+    end = time.time()
+    self.log(&#34;%s took %fs to decide.&#34;%(self.getName(agent),end-start))
+    return coord</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.getName"><code class="name flex">
+<span>def <span class="ident">getName</span></span>(<span>self, obj)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getName(self,obj):
+        return type(obj).__name__</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.log"><code class="name flex">
+<span>def <span class="ident">log</span></span>(<span>self, msg)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log(self,msg):
+    if self.silent: return
+    print(msg)
+    return</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.onKeyboardInterrupt"><code class="name flex">
+<span>def <span class="ident">onKeyboardInterrupt</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onKeyboardInterrupt(self):
+    try:
+        ans = input(&#34;Are you sure you want to quit? (Y)&#34;)
+    except KeyboardInterrupt:
+        return self.onKeyboardInterrupt()
+    if ans == &#39;y&#39; or ans == &#39;Y&#39;:
+        print(&#34;Game Over!~&#34;)
+        self.win = None
+        return True
+    else:
+        print(&#34;So be it.&#34;)
+        return False
+    return</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.takeTurn"><code class="name flex">
+<span>def <span class="ident">takeTurn</span></span>(<span>self, agent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Takes the turn for that agent.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def takeTurn(self,agent):
+    &#39;&#39;&#39;Takes the turn for that agent.&#39;&#39;&#39;
+
+    done = False
+    while(not done):
+        try:
+            self.updateAgents(agent.piece)
+            coord = self.getMove(agent)
+            self.state.place(agent.piece,coord)
+            done = True
+            
+            self.log(&#34;%s placed %s at (%d,%d).&#34;%(self.getName(agent),agent.piece,coord[0],coord[1]))
+            for heuristic in agent.heuristics: self.log(&#34;%s&#39;s score: %f&#34; % (heuristic.__name__,heuristic(agent.state,agent.piece,coord)))
+            
+        except OutOfBoundsException: self.log(&#34;Those coordinates are out of bounds!&#34;)
+        except OutOfSpaceException: self.log(&#34;The board is full and the game hasnt ended?&#34;)
+        except SpaceTakenException: self.log(&#34;Space is taken!&#34;)
+        except KeyboardInterrupt:
+            if self.onKeyboardInterrupt():
+                return
+    return</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs a round, allowing each agent to take their turn.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self):
+    &#39;&#39;&#39;Runs a round, allowing each agent to take their turn.&#39;&#39;&#39;
+
+    for agent in self.agents:
+        if self.win != False: return
+        self.log(&#34;\n&#34;*(self.state.height()+3))
+        self.log(&#34;%s (Piece: %s)&#39;s Turn!!!&#34;%(self.getName(agent),agent.piece))
+        self.log(self.state)
+        
+        #try:
+        self.takeTurn(agent)
+        #except BaseException as e:
+        #    self.log(&#34;Something went wrong!&#34;)
+        #    self.log(e)
+        #    self.win = None
+            
+        self.checkWin()       
+    return</code></pre>
+</details>
+</dd>
+<dt id="not-just-gomoku.game.Game.updateAgents"><code class="name flex">
+<span>def <span class="ident">updateAgents</span></span>(<span>self, piece)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Passes the updated state and turn to each agent.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateAgents(self,piece):
+    &#39;&#39;&#39;Passes the updated state and turn to each agent.&#39;&#39;&#39;
+
+    for other in self.agents:
+        start = time.time()
+        other.update(self.state,piece)
+        end = time.time()
+        self.log(&#34;%s took %fs to update.&#34;%(self.getName(other),end-start))
+    return</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = '../doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="not-just-gomoku" href="index.html">not-just-gomoku</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="not-just-gomoku.game.Game" href="#not-just-gomoku.game.Game">Game</a></code></h4>
+<ul class="two-column">
+<li><code><a title="not-just-gomoku.game.Game.checkWin" href="#not-just-gomoku.game.Game.checkWin">checkWin</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.getMove" href="#not-just-gomoku.game.Game.getMove">getMove</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.getName" href="#not-just-gomoku.game.Game.getName">getName</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.log" href="#not-just-gomoku.game.Game.log">log</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.onKeyboardInterrupt" href="#not-just-gomoku.game.Game.onKeyboardInterrupt">onKeyboardInterrupt</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.takeTurn" href="#not-just-gomoku.game.Game.takeTurn">takeTurn</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.update" href="#not-just-gomoku.game.Game.update">update</a></code></li>
+<li><code><a title="not-just-gomoku.game.Game.updateAgents" href="#not-just-gomoku.game.Game.updateAgents">updateAgents</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

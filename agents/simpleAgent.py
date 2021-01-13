@@ -1,5 +1,6 @@
 from agents.baseAgent import baseAgent
 class simpleAgent(baseAgent):
+    '''A simple agent that plays using shallow reflexEvaluate to decide.'''
 
     def getMove(self,state=None):
         cur = super().getMove(state)

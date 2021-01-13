@@ -5,7 +5,28 @@ from itertools import product
 #TODO: make setters raise errors regarding whether move was successful
 
 class state():
+    '''the game state.
+
+    Attributes:
+        __winnum (int): Number of pieces in a line required to win.
+        __height (int): The height of the grid.
+        __length (int): The length of the grid.
+        __pieces (str[]): The player pieces used in the grid.
+        __empty ((int,int)[]): The list of empty coordinates.
+        __board (dict): The list of coordinates occupied by each piece.
+        __grid (str[][]): The grid of pieces placed.
+    '''
+
     def __init__(self,height,length,winnum,pieces):
+        '''The constructor for the game state
+
+        Args:
+        height (int): The height of the grid.
+        length (int): The length of the grid.
+        winnum (int): Number of pieces in a line required to win.
+        pieces (str[]): The player pieces used in the grid.
+        '''
+
         self.__winnum = winnum
         self.__height = height
         self.__length = length
@@ -15,6 +36,8 @@ class state():
         self.__grid = [[None for x in range(length)] for y in range(height)]
 
     def forgetmefornow(self,memo):
+        '''?????????????'''
+
         cls = self.__class__
         
         self.__winnum = other.winnum()
@@ -47,6 +70,8 @@ class state():
     
     #Helper functions
     def isEmpty(self,coord):
+        '''Whether a coord on the grid is empty.'''
+
         if coord[0] < 0 or coord[1] < 0 or coord[0] >= self.__length or coord[1] >= self.__height:
             raise OutOfBoundsException("Coordinates (%d,%d) are out of range of a (%d,%d) board."%(coord+(self.__length,self.__height)))
         if self.__grid[coord[1]][coord[0]] == None:
@@ -55,6 +80,8 @@ class state():
             return False
 
     def isWin(self):
+        '''Checks whether there is a winner.'''
+
         for piece,coords in self.__board.items():
             if len(coords) < self.__winnum:
                 continue
@@ -142,6 +169,8 @@ class state():
     
     #unsafe setters
     def overwrite(self,piece,coord):
+        '''Overwrites the coord with the piece.'''
+
         self.erase(coord)
         self.__board[piece].append(coord)
         self.__empty.remove(coord)
@@ -149,6 +178,8 @@ class state():
         return
 
     def erase(self,coord):
+        '''Erases the piece on that coord.'''
+
         self.__grid[coord[1]][coord[0]] = None
         for piece in self.__board.values():
             try:
@@ -161,6 +192,8 @@ class state():
 
     #all in one function
     def place(self,piece,coord):
+        '''Places a piece at that coord if it is empty.'''
+
         if len(self.__empty) == 0:
             raise OutOfSpaceException("The board is out of space. isWin() should be called.")
         if self.isEmpty(coord):

@@ -2,6 +2,7 @@ from agents.baseAgent import baseAgent
 from pickle import dumps,loads
 from heuristics import *
 class markovAgent(baseAgent):
+    '''Agent using machine learning to tune heuristics. Machine learning not implemented, does not currently work and is not actually a markov agent.'''
 
     def __init__(self,*args,filepath="agents/markovSimpleAgent.pkl",heuristics=None,**kwargs):
         self.filepath = filepath

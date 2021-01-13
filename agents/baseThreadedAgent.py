@@ -1,7 +1,16 @@
 from threading import Thread
 from time import sleep
 from agents.baseAgent import baseAgent
+
 class baseThreadedAgent(baseAgent):
+    '''Extends baseAgent in order to provide multithreading functionality.
+    
+    Attributes:
+        thread (Thread): Thread used by agent to do precalculations.
+        isStopping (bool): Whether the thread is being interrupted. Should not be set.
+        expected (dict): The expected future states and the optimal moves for those states.
+        move (tuple): The current move, I think.
+    '''
 
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
@@ -25,6 +34,8 @@ class baseThreadedAgent(baseAgent):
 
     #for classes to implement
     def calculate(self):
+        '''How precalculations should be done. Should be overrided.'''
+
         pass
 
     #getter

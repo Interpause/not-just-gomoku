@@ -4,6 +4,7 @@ from agents.baseThreadedAgent import baseThreadedAgent
 #contains expectimax like elements. might actually be expectimax.
 #screwedover
 class maxThreadedAgent(baseThreadedAgent):
+    '''A multithreaded implementation of maxAgent.py. Does not work.'''
 
     def __init__(self,*args,depth=1,dim=0.5,salt=1,scenarios=5,**kwargs):
         super().__init__(*args,**kwargs)

@@ -1,6 +1,8 @@
 from tkinter import *
 from agents.baseAgent import baseAgent
+
 class guiPlayerAgent(baseAgent):
+    '''Extends baseAgent to provide a GUI for the player to use to play.'''
 
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
@@ -34,6 +36,8 @@ class guiPlayerAgent(baseAgent):
     #helper functions
     #enables all buttons
     def enable(self):
+        '''Enables all grid buttons.'''
+
         for y in range(self.state.height()):
             for x in range(self.state.length()):
                 self.btns[y][x].configure(state=NORMAL)
@@ -41,6 +45,8 @@ class guiPlayerAgent(baseAgent):
 
     #disables all buttons
     def disable(self):
+        '''Disables all grid buttons.'''
+
         for y in range(self.state.height()):
             for x in range(self.state.length()):
                 self.btns[y][x].configure(state=DISABLED)
@@ -48,6 +54,8 @@ class guiPlayerAgent(baseAgent):
 
     #changes/setups button texts
     def btnupdate(self):
+        '''Updates grid buttons to represent current self.state.'''
+
         if self.btns == []:
             self.btninit()
         grid = self.state.grid()
@@ -58,11 +66,15 @@ class guiPlayerAgent(baseAgent):
 
     #handler for buttons
     def passInput(self,coord):
+        '''Click handler for grid buttons.'''
+        
         self.input = coord
         return
 
     #setup buttons in grid and gives them above handler
     def btninit(self):
+        '''Creates grid of buttons.'''
+
         for y in range(self.state.height()):
             row = []
             for x in range(self.state.length()):

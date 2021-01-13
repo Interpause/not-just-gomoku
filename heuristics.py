@@ -6,11 +6,15 @@ winbonus = largenum*2 #twice max of actlen/state.winnum
 
 #helpers
 def isOut(state,x,y):
+    '''Whether the coordinates provided is outside the grid'''
+
     if x >= state.length() or y >= state.height() or x < 0 or y < 0: return True
     return False
 
 #heuristics
 def lineHeuristic(state,piece,coord,weight=1,multiplier=multiplier,exponent=exponent,winbonus=winbonus):
+    '''Heuristic that encourages agent to place in a straight line.'''
+
     def score(grid,xmul,ymul):
         def count(grid,xmul,ymul):
             maxlen = 1
@@ -59,6 +63,8 @@ def lineHeuristic(state,piece,coord,weight=1,multiplier=multiplier,exponent=expo
     return tscore*weight
 
 def blockHeuristic(state,piece,coord,weight=2,multiplier=multiplier,exponent=exponent):
+    '''Heuristic that encourages agent to block opponent's line.'''
+
     def score(grid,xmul,ymul):
         def count(grid,xmul,ymul):
             maxlen = 0
@@ -102,6 +108,8 @@ def blockHeuristic(state,piece,coord,weight=2,multiplier=multiplier,exponent=exp
 
 #incomplete
 def clusterHeuristic(state,piece,coord,weight=0.5,multiplier=multiplier,exponent=exponent):
+    '''Heuristic that encourages agents to place pieces closer to each other.'''
+
     def score(grid,xmul,ymul):
         def count(grid,xmul,ymul):
             maxlen = 0
@@ -144,6 +152,8 @@ def clusterHeuristic(state,piece,coord,weight=0.5,multiplier=multiplier,exponent
     return tscore*weight
 
 def openHeuristic(state,piece,coord,weight=10,multiplier=1,exponent=3):
+    '''Heuristic that encourages agents to place pieces further from each other.'''
+
     def score(grid,xmul,ymul):
         def count(grid,xmul,ymul):
             space = 0
